@@ -35,6 +35,48 @@ export class AuthRepository {
       mobileExists,
     };
   }
+  async findUserByEmail(email: string): Promise<UserCredentials | null> {
+    return prisma.userCredentials.findUnique({
+      where: {
+        email,
+       
+      },
+    });
+  }
+  async checkUserActive(credId: string): Promise<UserProfile | null> {
+    return prisma.userProfile.findUnique({
+      where: {
+        cred_id: credId,
+         isDeleted: false,
+        isVerified: true,
+        status: "ACTIVE",
+      },
+    });
+  }
+
+  async incrementFailedLoginAttempts(credId: string) {
+    return prisma.userCredentials.update({
+      where: {
+        cred_id: credId,
+      },
+      data: {
+        failedLoginAttempts: {
+          increment: 1,
+        },
+      },
+    });
+  }
+  async updateLoginSuccess(credId: string) {
+    return prisma.userCredentials.update({
+      where: {
+        cred_id: credId,
+      },
+      data: {
+        failedLoginAttempts: 0,
+        lastLoginAt: new Date(),
+      },
+    });
+  }
 
   async findDeviceSessionById(
     sessionId: string,

@@ -21,4 +21,13 @@ export class AuthController {
       ApiResponse.success(res, 201, result.message, result.data);
     },
   );
+  loginUser = catchAsync(
+    async (
+      req: Request<{}, {}, RegisterUserInput>,
+      res: Response,
+    ): Promise<void> => {
+      const result = await this.authService.loginUser(req.body);
+      ApiResponse.success(res, 200, result.message, result.data);
+    },
+  );
 }

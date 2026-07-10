@@ -17,7 +17,7 @@ interface Config {
   DATABASE_URL: string;
   REDIS_URL: string;
   JWT_REFRESH_SECRET: string;
-  JWT_EXPIRES_IN: string;
+  JWT_REFRESH_EXPIRES_IN: number | string;
   LOG_LEVEL: string;
   ALLOWED_ORIGINS: string;
 }
@@ -33,7 +33,7 @@ export const env: Config = {
 
   JWT_REFRESH_SECRET: RequiredEnv("JWT_REFRESH_SECRET"),
 
-  JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN || "24h",
+  JWT_REFRESH_EXPIRES_IN: process.env.JWT_REFRESH_EXPIRES_IN || "7d",
 
   LOG_LEVEL: process.env.LOG_LEVEL || "info",
 

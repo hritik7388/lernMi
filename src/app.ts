@@ -22,9 +22,10 @@ import { setupGracefulShutdown } from "./common/utils/graceful-shutdown";
 import { errorMiddleware } from "./common/middleware/error.middleware";
 import { notFoundMiddleware } from "./common/middleware";
 import corsMiddleware from "./common/middleware/cors.middleware";
+import {env} from "./config/env";
 
 const app = express();
-const PORT = Number(process.env.PORT) || 3001;
+const PORT =  env.PORT || 3000;
 
 // Middlewares
 app.use(cors());
