@@ -1,0 +1,102 @@
+generator client {
+  provider = "prisma-client-js"
+  // output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model UserCredentials {
+  cred_id             String    @id @default(uuid())
+  email               String    @unique
+  passwordHash        String
+  failedLoginAttempts Int       @default(0)
+  lastLoginAt         DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  profile        UserProfile?
+  deviceSessions DeviceSession[]
+
+  @@map("user_credentials")
+}
+
+model UserProfile {
+  user_id      String     @id @default(uuid())
+  firstName    String
+  lastName     String
+  countryCode  String     @default("+91")
+  mobileNumber String     @unique
+  user_type    UserType   @default(USER)
+  isVerified   Boolean    @default(false)
+  isDeleted    Boolean    @default(false)
+  status       UserStatus @default(PENDING)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  cred_id String @unique
+
+  credentials UserCredentials @relation(fields: [cred_id], references: [cred_id], onDelete: Cascade)
+  userMedias  UserMedia[]
+
+  @@map("user_profiles")
+}
+
+model DeviceSession {
+  session_id String @id @default(uuid())
+
+  cred_id String
+
+  device_FCM_Id String
+  deviceName    String
+  deviceType    String
+  osVersion     String
+  appVersion    String
+  ipAddress     String
+
+  lastLoginAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  credentials UserCredentials @relation(fields: [cred_id], references: [cred_id], onDelete: Cascade)
+
+  @@index([cred_id])
+  @@map("device_sessions")
+}
+
+model UserMedia {
+  id String @id @default(uuid())
+
+  user_id String?
+
+  mediaType MediaType
+  url       String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user UserProfile? @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@map("user_medias")
+}
+
+enum UserStatus {
+  PENDING
+  ACTIVE
+  SUSPENDED
+}
+
+enum UserType {
+  USER
+  SUPER_ADMIN
+  SUB_ADMIN
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+}
