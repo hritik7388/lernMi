@@ -24,6 +24,7 @@ import corsMiddleware from "./common/middleware/cors.middleware";
 import {env} from "./config/env";
 
 const app = express();
+app.disable("x-powered-by");
 const PORT =  env.PORT || 3000;
 
 // Middlewares 
