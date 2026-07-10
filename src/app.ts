@@ -9,8 +9,7 @@ dotenv.config();
   return this.toString();
 };
 import routes from "./routes";
-import express from "express";
-import cors from "cors";
+import express from "express"; 
 import morgan from "morgan";
 import path from "node:path";
 
@@ -27,8 +26,7 @@ import {env} from "./config/env";
 const app = express();
 const PORT =  env.PORT || 3000;
 
-// Middlewares
-app.use(cors());
+// Middlewares 
 app.use(morgan("dev"));
 app.use(corsMiddleware);
 app.use(express.json());
