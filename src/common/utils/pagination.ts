@@ -1,3 +1,4 @@
+// src/common/utils/pagination.ts
 export interface PaginationQuery {
   page?: number | string;
   limit?: number | string;

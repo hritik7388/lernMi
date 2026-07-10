@@ -1,3 +1,4 @@
+// src/common/constant/ErrorCodes.ts
 export const ErrorCodes = {
   // Common
   INTERNAL_SERVER_ERROR: "INTERNAL_SERVER_ERROR",
