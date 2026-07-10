@@ -1,7 +1,7 @@
 // src/common/helper/bcrypt.helper.ts
 import bcrypt from "bcrypt";
 
-const SALT_ROUNDS = 12;
+const SALT_ROUNDS = 10;
 
 export class BcryptHelper {
   static async hash(password: string): Promise<string> {

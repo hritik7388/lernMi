@@ -3,9 +3,10 @@
 import jwt, { SignOptions } from "jsonwebtoken";
 import { env } from "../../config/env";
 
-export interface JwtPayload {
-  id: string;
-  email?: string;
+export interface JwtPayload { 
+  credId: string;
+  email: string;
+  userType: string;
 }
 
 export class JwtHelper {

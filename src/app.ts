@@ -12,7 +12,7 @@ import routes from "./routes";
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
-import path from "path";
+import path from "node:path";
 
 import prisma from "./config/prisma";
 import { redisClient } from "./config/redis";

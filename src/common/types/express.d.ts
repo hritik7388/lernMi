@@ -1,8 +1,7 @@
 // src/common/types/express.d.ts
 declare global {
   namespace Express {
-    interface User {
-      userId: string;
+    interface User { 
       credId: string;
       email: string;
       userType: string;

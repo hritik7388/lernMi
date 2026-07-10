@@ -4,6 +4,7 @@ import { Router } from "express";
 import { AuthController } from "./controller";
 import { registerSchema, loginSchema } from "./validator";
 import { validate } from "../../common/middleware";
+import { authenticate } from "../../common/middleware/auth.middleware";
 const authRouter = Router();
 const authController = new AuthController();
 
@@ -14,5 +15,7 @@ authRouter.post(
 );
 
 authRouter.post("/login", validate(loginSchema), authController.loginUser);
+
+authRouter.get("/profile", authenticate, authController.getUserProfile);
 
 export default authRouter;

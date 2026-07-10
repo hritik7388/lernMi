@@ -6,7 +6,7 @@ import { RegisterUserInput, LoginUserInput } from "./validator";
 import { JwtHelper } from "../../common/helper/jwt.helper";
 
 export class AuthService {
-  private repository: AuthRepository;
+  private readonly repository: AuthRepository;
 
   constructor() {
     this.repository = new AuthRepository();
@@ -73,8 +73,9 @@ export class AuthService {
     }
     await this.repository.updateLoginSuccess(emailExists.cred_id);
     const { refreshToken } = JwtHelper.generateToken({
-      id: emailExists.cred_id,
+      credId: emailExists.cred_id,
       email: emailExists.email,
+      userType: userProfile.user_type,
     });
 
     return {
@@ -84,6 +85,17 @@ export class AuthService {
         refreshToken,
         usertype: userProfile.user_type,
       },
+    };
+  }
+  async getUserProfile(credId: string) {
+    console.log("credId", credId);
+    const userProfile = await this.repository.getUserProfile(credId);
+    if (!userProfile) {
+      throw new AppError("User profile not found", HttpStatus.NOT_FOUND);
+    }
+    return {
+      message: "User profile fetched successfully",
+      data: userProfile,
     };
   }
 }

@@ -30,4 +30,12 @@ export class AuthController {
       ApiResponse.success(res, 200, result.message, result.data);
     },
   );
+
+  getUserProfile = catchAsync(async (req, res) => {
+    const credId = req.user?.credId;
+
+    const result = await this.authService.getUserProfile(credId!);
+
+    ApiResponse.success(res, 200, result.message, result.data);
+  });
 }

@@ -39,7 +39,6 @@ export class AuthRepository {
     return prisma.userCredentials.findUnique({
       where: {
         email,
-       
       },
     });
   }
@@ -47,7 +46,7 @@ export class AuthRepository {
     return prisma.userProfile.findUnique({
       where: {
         cred_id: credId,
-         isDeleted: false,
+        isDeleted: false,
         isVerified: true,
         status: "ACTIVE",
       },
@@ -129,6 +128,14 @@ export class AuthRepository {
   ): Promise<DeviceSession> {
     return prisma.deviceSession.create({
       data,
+    });
+  }
+
+  async getUserProfile(credId: string): Promise<UserProfile | null> {
+    return prisma.userProfile.findUnique({
+      where: {
+        cred_id: credId,
+      },
     });
   }
 }

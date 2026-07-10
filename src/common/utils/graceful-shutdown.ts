@@ -1,5 +1,5 @@
 // src/common/utils/graceful-shutdown.ts
-import { Server } from "http";
+import { Server } from "node:http";
 
 import prisma from "../../config/prisma";
 import { redisClient } from "../../config/redis";
