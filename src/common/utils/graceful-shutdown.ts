@@ -12,7 +12,7 @@ export const setupGracefulShutdown = (server: Server) => {
     if (isShuttingDown) return;
     isShuttingDown = true;
 
-    logger.info(`Received ${signal}. Starting graceful shutdown...`);
+    logger.info(`🛑 Received ${signal}. Starting graceful shutdown...`);
 
     const forceTimeout = setTimeout(() => {
       logger.error("Shutdown timeout reached. Forcing exit.");
@@ -23,24 +23,24 @@ export const setupGracefulShutdown = (server: Server) => {
       // Stop accepting new requests
       await new Promise<void>((resolve) => {
         server.close(() => {
-          logger.info("HTTP server closed");
+          logger.info("🌐HTTP server closed");
           resolve();
         });
       });
 
       // Disconnect Prisma
       await prisma.$disconnect();
-      logger.info("Prisma disconnected");
+      logger.info("🗄️ Prisma disconnected");
 
       // Disconnect Redis
       if (redisClient.status === "ready") {
         await redisClient.quit();
-        logger.info("Redis disconnected");
+        logger.info("📦 Redis disconnected");
       }
 
       clearTimeout(forceTimeout);
 
-      logger.info("Graceful shutdown completed.");
+      logger.info("✅  Graceful shutdown completed.");
       process.exit(0);
     } catch (error: any) {
       logger.error("Error during graceful shutdown", {

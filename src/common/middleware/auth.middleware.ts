@@ -1,3 +1,4 @@
+// src/common/middleware/auth.middleware.ts
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
@@ -40,6 +41,7 @@ export const authenticate = catchAsync(
 
     // Optional: Validate active session from Redis
     const session = await redisClient.get(`session:${decoded.credId}`);
+    console.log("session", session);
 
     if (!session) {
       throw new AppError(

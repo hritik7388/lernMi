@@ -3,19 +3,20 @@ import Redis from "ioredis";
 import { env } from "./env";
 import logger from "./logger";
 
-
 export const redisClient = new Redis(env.REDIS_URL, {
   maxRetriesPerRequest: 3,
   enableReadyCheck: true,
 
   retryStrategy(times: number) {
     const delay = Math.min(times * 100, 3000);
-    logger.warn(`Redis reconnect attempt #${times}, retrying in ${delay}ms`);
+    logger.warn(`🔄 Redis reconnect attempt #${times}, retrying in ${delay}ms`);
     return delay;
   },
 
   reconnectOnError(err) {
-    logger.error("Redis reconnectOnError triggered", { message: err.message });
+    logger.error("🚨 Redis reconnectOnError triggered", {
+      message: err.message,
+    });
     return true;
   },
 
@@ -23,21 +24,23 @@ export const redisClient = new Redis(env.REDIS_URL, {
 });
 
 redisClient.on("connect", () => {
-  logger.info("Redis connection established");
+  logger.info("🔌 Redis connection established");
 });
 
 redisClient.on("ready", () => {
-  logger.info("Redis ready to use");
+  logger.info("✅ Redis is ready to use");
 });
 
 redisClient.on("error", (error) => {
-  logger.error("Redis connection error", { message: error.message });
+  logger.error("❌ Redis connection error", {
+    message: error.message,
+  });
 });
 
 redisClient.on("close", () => {
-  logger.warn("Redis connection closed");
+  logger.warn("⚠️ Redis connection closed");
 });
 
 redisClient.on("end", () => {
-  logger.warn("Redis connection ended");
+  logger.warn("🛑 Redis connection ended");
 });

@@ -38,4 +38,11 @@ export class AuthController {
 
     ApiResponse.success(res, 200, result.message, result.data);
   });
+
+  forgetPassword = catchAsync(async (req, res) => {
+    const { email } = req.body;
+    const result = await this.authService.forgetPassword(email);
+
+    ApiResponse.success(res, 200, result.message, result.data);
+  });
 }

@@ -4,6 +4,10 @@ import { AppError, HttpStatus } from "../../common/errors";
 import { BcryptHelper } from "../../common/helper/bcrypt.helper";
 import { RegisterUserInput, LoginUserInput } from "./validator";
 import { JwtHelper } from "../../common/helper/jwt.helper";
+import { redisClient } from "../../config/redis";
+import { generateOTP } from "../../common/utils/otp";
+
+const OTP_EXPIRY_SECONDS = 3 * 60;
 
 export class AuthService {
   private readonly repository: AuthRepository;
@@ -77,7 +81,12 @@ export class AuthService {
       email: emailExists.email,
       userType: userProfile.user_type,
     });
-
+    await redisClient.set(
+      `session:${emailExists.cred_id}`,
+      refreshToken,
+      "EX",
+      60 * 60 * 24 * 7,
+    );
     return {
       success: true,
       message: "Login successful.",
@@ -96,6 +105,47 @@ export class AuthService {
     return {
       message: "User profile fetched successfully",
       data: userProfile,
+    };
+  }
+  async forgetPassword(email: string) {
+    const emailExists = await this.repository.findUserByEmail(email);
+    if (!emailExists) {
+      throw new AppError(
+        "User with this email does not exist",
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    const userProfile = await this.repository.checkUserActive(
+      emailExists.cred_id,
+    );
+    if (!userProfile) {
+      throw new AppError(
+        "User profile Deleted Unverified or not Active",
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const otp = generateOTP();
+
+    // Store OTP in Redis for 3 minutes
+    await redisClient.set(
+      `forgot-password:${emailExists.email}`,
+      otp,
+      "EX",
+      OTP_EXPIRY_SECONDS,
+    );
+
+    // // Send email (BullMQ / Nodemailer)
+    // await emailQueue.add("forgot-password", {
+    //   to: emailExists.email,
+    //   subject: "Reset Password OTP",
+    //   otp,
+    // });
+
+    return {
+      success: true,
+      message: "OTP sent successfully. It is valid for 3 minutes.",
+      data:otp
     };
   }
 }

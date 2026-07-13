@@ -9,7 +9,7 @@ dotenv.config();
   return this.toString();
 };
 import routes from "./routes";
-import express from "express"; 
+import express from "express";
 import morgan from "morgan";
 import path from "node:path";
 
@@ -21,13 +21,13 @@ import { setupGracefulShutdown } from "./common/utils/graceful-shutdown";
 import { errorMiddleware } from "./common/middleware/error.middleware";
 import { notFoundMiddleware } from "./common/middleware";
 import corsMiddleware from "./common/middleware/cors.middleware";
-import {env} from "./config/env";
+import { env } from "./config/env";
 
 const app = express();
 app.disable("x-powered-by");
-const PORT =  env.PORT || 3000;
+const PORT = env.PORT || 3000;
 
-// Middlewares 
+// Middlewares
 app.use(morgan("dev"));
 app.use(corsMiddleware);
 app.use(express.json());
@@ -48,21 +48,22 @@ async function bootstrap() {
   try {
     // Prisma
     await prisma.$connect();
-    logger.info("✅ Prisma connected");
+    logger.info("🗄️ ✅ Prisma connected successfully");
 
     // Redis
     if (redisClient.status !== "ready") {
       await redisClient.connect();
-      logger.info("✅ Redis connected");
+      logger.info("📦 ✅ Redis connected successfully");
     }
 
     // HTTP Server
     const server = app.listen(PORT, () => {
-      logger.info(`🚀 Server running on http://localhost:${PORT}`);
+      logger.info(`🌐 🚀 Server is running at http://localhost:${PORT}`);
     });
 
     // Graceful Shutdown
     setupGracefulShutdown(server);
+    logger.info("🎉 Application started successfully");
   } catch (error: any) {
     logger.error("Application startup failed", {
       message: error.message,
