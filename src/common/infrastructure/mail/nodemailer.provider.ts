@@ -4,7 +4,7 @@ import { env } from "../../../config/env";
 import logger from "../../../config/logger";
 
 export const mailTransporter = nodemailer.createTransport({
-  service: "gmail",
+  service: env.SMTP_HOST,
   auth: {
     user: env.SMTP_USER,
     pass: env.SMTP_PASS,
