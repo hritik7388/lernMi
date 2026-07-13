@@ -29,16 +29,13 @@ export class NotificationDispatcher {
       case NotificationChannel.EMAIL: {
         let html = "";
 
-        switch (payload.template) {
-          case NotificationTemplate.PASSWORD_RESET:
-            html = forgotPasswordTemplate(payload.data.otp as string);
-            break;
-
-          default:
-            throw new Error(
-              `Unsupported email template: ${payload.template}`
-            );
-        }
+   if (payload.template === NotificationTemplate.PASSWORD_RESET) {
+  html = forgotPasswordTemplate(payload.data.otp as string);
+} else {
+  throw new Error(
+    `Unsupported email template: ${payload.template}`
+  );
+}
 
         await emailProvider.send({
           to: payload.recipient,
