@@ -1,11 +1,21 @@
 // src/common/notification/dispatcher.ts
+
 import logger from "../../config/logger";
+
 import { NotificationChannel } from "../enums/notification-channel.enum";
+import { NotificationTemplate } from "../enums/notification-template.enum";
+
 import { NotificationPayload } from "./notification.service";
 
-import emailProvider, { EmailNotification } from "./providers/email.provider";
+import emailProvider, {
+  EmailNotification,
+} from "./providers/email.provider";
 
-import pushProvider, { PushNotification } from "./providers/push.provider";
+import pushProvider, {
+  PushNotification,
+} from "./providers/push.provider";
+
+import { forgotPasswordTemplate } from "../templates/email/forgot-password";
 
 export class NotificationDispatcher {
   async dispatch(payload: NotificationPayload): Promise<void> {
@@ -17,10 +27,23 @@ export class NotificationDispatcher {
 
     switch (payload.channel) {
       case NotificationChannel.EMAIL: {
+        let html = "";
+
+        switch (payload.template) {
+          case NotificationTemplate.FORGOT_PASSWORD:
+            html = forgotPasswordTemplate(payload.data.otp as string);
+            break;
+
+          default:
+            throw new Error(
+              `Unsupported email template: ${payload.template}`
+            );
+        }
+
         await emailProvider.send({
           to: payload.recipient,
           subject: payload.subject ?? "Notification",
-          html: payload.data.html as string,
+          html,
         } as EmailNotification);
 
         break;
@@ -38,7 +61,9 @@ export class NotificationDispatcher {
       }
 
       default:
-        throw new Error(`Unsupported notification channel: ${payload.channel}`);
+        throw new Error(
+          `Unsupported notification channel: ${payload.channel}`
+        );
     }
 
     logger.info("✅ Notification dispatched successfully", {

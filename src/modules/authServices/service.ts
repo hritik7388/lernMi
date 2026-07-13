@@ -6,6 +6,9 @@ import { RegisterUserInput, LoginUserInput } from "./validator";
 import { JwtHelper } from "../../common/helper/jwt.helper";
 import { redisClient } from "../../config/redis";
 import { generateOTP } from "../../common/utils/otp";
+import { notificationService } from "../../common/notification/notification.service";
+import { NotificationChannel } from "../../common/enums/notification-channel.enum";
+import { NotificationTemplate } from "../../common/enums/notification-template.enum";
 
 const OTP_EXPIRY_SECONDS = 3 * 60;
 
@@ -129,11 +132,22 @@ export class AuthService {
 
     // Store OTP in Redis for 3 minutes
     await redisClient.set(
-      `forgot-password:${emailExists.email}`,
-      otp,
-      "EX",
-      OTP_EXPIRY_SECONDS,
-    );
+  `forgot-password:${emailExists.email}`,
+  otp,
+  "EX",
+  OTP_EXPIRY_SECONDS,
+);
+
+const mail=await notificationService.send({
+  channel: NotificationChannel.EMAIL,
+  template: NotificationTemplate.FORGOT_PASSWORD,
+  recipient: emailExists.email,
+  subject: "Reset Password OTP",
+  data: {
+    otp, 
+  },
+});
+console.log("mail===============>>>",mail)
 
     // // Send email (BullMQ / Nodemailer)
     // await emailQueue.add("forgot-password", {

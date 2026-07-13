@@ -55,7 +55,7 @@ export const env: Config = {
 
   BCRYPT_ROUNDS: Number(process.env.BCRYPT_ROUNDS) || 10,
 
-  SMTP_HOST: RequiredEnv("SMTP_HOST"),
+SMTP_HOST: process.env.SMTP_HOST || "127.0.0.1",
 
   SMTP_PORT: RequiredEnv("SMTP_PORT"),  
 

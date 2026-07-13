@@ -1,4 +1,4 @@
-// src/common/templates/email/forgot-password.template.ts
+// src/common/templates/email/forgot-password.ts
 
 import { emailLayout } from "../layout.template";
 

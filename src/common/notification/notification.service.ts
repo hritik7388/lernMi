@@ -1,4 +1,4 @@
-// src/notification/notification.service.ts
+// src/common/notification/notification.service.ts
 
 import { notificationQueue } from "./queues/notification.queue";
 import logger from "../../config/logger";
