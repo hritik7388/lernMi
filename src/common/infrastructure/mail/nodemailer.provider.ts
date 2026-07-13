@@ -4,11 +4,13 @@ import { env } from "../../../config/env";
 import logger from "../../../config/logger";
 
 export const mailTransporter = nodemailer.createTransport({
-  service: env.SMTP_HOST,
+  service: env.SMTP_HOST,  port: 587,
+  secure: false, // STARTTLS
   auth: {
     user: env.SMTP_USER,
     pass: env.SMTP_PASS,
   },
+  requireTLS: true,
 
   pool: true,
   maxConnections: 5,
