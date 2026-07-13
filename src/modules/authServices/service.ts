@@ -140,7 +140,7 @@ export class AuthService {
 
 const mail=await notificationService.send({
   channel: NotificationChannel.EMAIL,
-  template: NotificationTemplate.FORGOT_PASSWORD,
+  template: NotificationTemplate.PASSWORD_RESET,
   recipient: emailExists.email,
   subject: "Reset Password OTP",
   data: {

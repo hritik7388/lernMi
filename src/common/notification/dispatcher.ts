@@ -30,7 +30,7 @@ export class NotificationDispatcher {
         let html = "";
 
         switch (payload.template) {
-          case NotificationTemplate.FORGOT_PASSWORD:
+          case NotificationTemplate.PASSWORD_RESET:
             html = forgotPasswordTemplate(payload.data.otp as string);
             break;
 
