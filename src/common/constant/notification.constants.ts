@@ -1,5 +1,5 @@
 // src/common/constant/notification.constants.ts
- // src/common/constants/notification.constants.ts
+// src/common/constants/notification.constants.ts
 
 /**
  * Queue Names
@@ -30,10 +30,10 @@ export const NOTIFICATION_CHANNEL = {
  * Email Templates
  */
 export const EMAIL_TEMPLATE = {
-   PASSWORD_RESET :"PASSWORD_RESET",
-  VERIFY_EMAIL :"VERIFY_EMAIL",
-  WELCOME : "WELCOME",
-  PASSWORD_RESET_SUCCESS :"PASSWORD_RESET_SUCCESS",
+  PASSWORD_RESET: "PASSWORD_RESET",
+  VERIFY_EMAIL: "VERIFY_EMAIL",
+  WELCOME: "WELCOME",
+  PASSWORD_RESET_SUCCESS: "PASSWORD_RESET_SUCCESS",
 } as const;
 
 /**
