@@ -1,3 +1,4 @@
+// src/common/infrastructure/push/firebase.provider.ts
 import admin from "firebase-admin";
 
 import { env } from "../../../config/env";
@@ -8,7 +9,7 @@ if (!admin.apps.length) {
     credential: admin.credential.cert({
       projectId: env.FIREBASE_PROJECT_ID,
       clientEmail: env.FIREBASE_CLIENT_EMAIL,
-      privateKey: env.FIREBASE_PRIVATE_KEY.replaceAll("\\n", "\n"),
+      privateKey: env.FIREBASE_PRIVATE_KEY.replaceAll(String.raw`\n`, "\n"), 
     }),
   });
 
