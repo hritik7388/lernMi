@@ -21,6 +21,19 @@ interface Config {
   LOG_LEVEL: string;
   ALLOWED_ORIGINS: string;
   BCRYPT_ROUNDS: number;
+  SMTP_HOST:  string,
+
+SMTP_PORT: string,
+
+SMTP_USER: string,
+
+SMTP_PASS: string,
+
+SMTP_FROM:string,
+
+FIREBASE_PROJECT_ID:string,
+FIREBASE_CLIENT_EMAIL:string,
+FIREBASE_PRIVATE_KEY:string,
 }
 
 export const env: Config = {
@@ -41,4 +54,22 @@ export const env: Config = {
   ALLOWED_ORIGINS: process.env.ALLOWED_ORIGINS || "http://localhost:3000",
 
   BCRYPT_ROUNDS: Number(process.env.BCRYPT_ROUNDS) || 10,
+
+  SMTP_HOST: RequiredEnv("SMTP_HOST"),
+
+  SMTP_PORT: RequiredEnv("SMTP_PORT"),  
+
+  SMTP_USER: RequiredEnv("SMTP_USER"),
+
+  SMTP_PASS: RequiredEnv("SMTP_PASS"),
+
+  SMTP_FROM: RequiredEnv("SMTP_FROM"),
+
+  FIREBASE_PROJECT_ID: RequiredEnv("FIREBASE_PROJECT_ID"),
+
+  FIREBASE_CLIENT_EMAIL: RequiredEnv("FIREBASE_CLIENT_EMAIL"),
+
+  FIREBASE_PRIVATE_KEY: RequiredEnv("FIREBASE_PRIVATE_KEY"),
+
+
 };

@@ -1,0 +1,1 @@
+// src/config/mail.ts
