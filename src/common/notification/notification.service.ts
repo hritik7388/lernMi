@@ -22,26 +22,22 @@ export interface NotificationPayload {
 class NotificationService {
   async send(payload: NotificationPayload): Promise<void> {
     try {
-      await notificationQueue.add(
-        "SEND_NOTIFICATION",
-        payload,
-        {
-          priority: payload.priority ?? 1,
+      await notificationQueue.add("SEND_NOTIFICATION", payload, {
+        priority: payload.priority ?? 1,
 
-          delay: payload.delay ?? 0,
+        delay: payload.delay ?? 0,
 
-          removeOnComplete: 1000,
+        removeOnComplete: 1000,
 
-          removeOnFail: 500,
+        removeOnFail: 500,
 
-          attempts: 3,
+        attempts: 3,
 
-          backoff: {
-            type: "exponential",
-            delay: 5000,
-          },
-        }
-      );
+        backoff: {
+          type: "exponential",
+          delay: 5000,
+        },
+      });
 
       logger.info("📨 Notification queued", {
         channel: payload.channel,

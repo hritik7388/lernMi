@@ -8,7 +8,11 @@ import { authenticate } from "../../common/middleware/auth.middleware";
 const authRouter = Router();
 const authController = new AuthController();
 
-authRouter.post("/register",validate(registerSchema),  authController.registerUser,);
+authRouter.post(
+  "/register",
+  validate(registerSchema),
+  authController.registerUser,
+);
 
 authRouter.post("/login", validate(loginSchema), authController.loginUser);
 

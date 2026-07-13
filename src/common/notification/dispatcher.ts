@@ -7,13 +7,9 @@ import { NotificationTemplate } from "../enums/notification-template.enum";
 
 import { NotificationPayload } from "./notification.service";
 
-import emailProvider, {
-  EmailNotification,
-} from "./providers/email.provider";
+import emailProvider, { EmailNotification } from "./providers/email.provider";
 
-import pushProvider, {
-  PushNotification,
-} from "./providers/push.provider";
+import pushProvider, { PushNotification } from "./providers/push.provider";
 
 import { forgotPasswordTemplate } from "../templates/email/forgot-password";
 
@@ -29,13 +25,11 @@ export class NotificationDispatcher {
       case NotificationChannel.EMAIL: {
         let html = "";
 
-   if (payload.template === NotificationTemplate.PASSWORD_RESET) {
-  html = forgotPasswordTemplate(payload.data.otp as string);
-} else {
-  throw new Error(
-    `Unsupported email template: ${payload.template}`
-  );
-}
+        if (payload.template === NotificationTemplate.PASSWORD_RESET) {
+          html = forgotPasswordTemplate(payload.data.otp as string);
+        } else {
+          throw new Error(`Unsupported email template: ${payload.template}`);
+        }
 
         await emailProvider.send({
           to: payload.recipient,
@@ -58,9 +52,7 @@ export class NotificationDispatcher {
       }
 
       default:
-        throw new Error(
-          `Unsupported notification channel: ${payload.channel}`
-        );
+        throw new Error(`Unsupported notification channel: ${payload.channel}`);
     }
 
     logger.info("✅ Notification dispatched successfully", {

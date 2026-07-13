@@ -132,22 +132,22 @@ export class AuthService {
 
     // Store OTP in Redis for 3 minutes
     await redisClient.set(
-  `forgot-password:${emailExists.email}`,
-  otp,
-  "EX",
-  OTP_EXPIRY_SECONDS,
-);
+      `forgot-password:${emailExists.email}`,
+      otp,
+      "EX",
+      OTP_EXPIRY_SECONDS,
+    );
 
-const mail=await notificationService.send({
-  channel: NotificationChannel.EMAIL,
-  template: NotificationTemplate.PASSWORD_RESET,
-  recipient: emailExists.email,
-  subject: "Reset Password OTP",
-  data: {
-    otp, 
-  },
-});
-console.log("mail===============>>>",mail)
+    const mail = await notificationService.send({
+      channel: NotificationChannel.EMAIL,
+      template: NotificationTemplate.PASSWORD_RESET,
+      recipient: emailExists.email,
+      subject: "Reset Password OTP",
+      data: {
+        otp,
+      },
+    });
+    console.log("mail===============>>>", mail);
 
     // // Send email (BullMQ / Nodemailer)
     // await emailQueue.add("forgot-password", {
@@ -159,7 +159,7 @@ console.log("mail===============>>>",mail)
     return {
       success: true,
       message: "OTP sent successfully. It is valid for 3 minutes.",
-      data:otp
+      data: otp,
     };
   }
 }

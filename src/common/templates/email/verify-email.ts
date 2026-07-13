@@ -1,4 +1,4 @@
-// src/common/templates/email/verify-email.template.ts
+// src/common/templates/email/verify-email.ts
 
 import { emailLayout } from "../layout.template";
 

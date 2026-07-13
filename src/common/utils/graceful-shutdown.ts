@@ -64,10 +64,10 @@ export const setupGracefulShutdown = (server: Server) => {
     shutdown("uncaughtException");
   });
 
-  process.on('unhandledRejection', (reason: any) => {
-        logger.error('Unhandled Rejection', {
-            reason,
-        });
-        shutdown('unhandledRejection');
+  process.on("unhandledRejection", (reason: any) => {
+    logger.error("Unhandled Rejection", {
+      reason,
     });
+    shutdown("unhandledRejection");
+  });
 };

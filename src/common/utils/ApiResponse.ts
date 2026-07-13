@@ -1,5 +1,5 @@
 // src/common/utils/ApiResponse.ts
- import { Response } from "express";
+import { Response } from "express";
 
 export class ApiResponse {
   static success<T>(

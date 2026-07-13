@@ -22,7 +22,7 @@ export const authenticate = catchAsync(
     if (!authHeader?.startsWith("Bearer ")) {
       throw new AppError(
         "Unauthorized. Access token is missing.",
-        HttpStatus.UNAUTHORIZED
+        HttpStatus.UNAUTHORIZED,
       );
     }
 
@@ -35,7 +35,7 @@ export const authenticate = catchAsync(
     } catch {
       throw new AppError(
         "Invalid or expired access token.",
-        HttpStatus.UNAUTHORIZED
+        HttpStatus.UNAUTHORIZED,
       );
     }
 
@@ -46,7 +46,7 @@ export const authenticate = catchAsync(
     if (!session) {
       throw new AppError(
         "Session expired. Please login again.",
-        HttpStatus.UNAUTHORIZED
+        HttpStatus.UNAUTHORIZED,
       );
     }
 
@@ -57,5 +57,5 @@ export const authenticate = catchAsync(
     };
 
     next();
-  }
+  },
 );

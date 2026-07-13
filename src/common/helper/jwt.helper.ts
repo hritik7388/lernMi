@@ -3,7 +3,7 @@
 import jwt, { SignOptions } from "jsonwebtoken";
 import { env } from "../../config/env";
 
-export interface JwtPayload { 
+export interface JwtPayload {
   credId: string;
   email: string;
   userType: string;
@@ -27,10 +27,7 @@ export class JwtHelper {
   }
 
   static verifyRefreshToken(token: string): JwtPayload {
-    return jwt.verify(
-      token,
-      env.JWT_REFRESH_SECRET,
-    ) as JwtPayload;
+    return jwt.verify(token, env.JWT_REFRESH_SECRET) as JwtPayload;
   }
 
   static generateToken(payload: JwtPayload) {

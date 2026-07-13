@@ -17,12 +17,7 @@ export const validate =
           message: issue.message,
         }));
 
-        ApiResponse.error(
-          res,
-          400,
-          "Validation failed",
-          errors
-        );
+        ApiResponse.error(res, 400, "Validation failed", errors);
 
         return;
       }

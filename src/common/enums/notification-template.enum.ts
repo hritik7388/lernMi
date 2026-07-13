@@ -1,3 +1,4 @@
+// src/common/enums/notification-template.enum.ts
 export enum NotificationTemplate {
   PASSWORD_RESET = "PASSWORD_RESET",
   VERIFY_EMAIL = "VERIFY_EMAIL",

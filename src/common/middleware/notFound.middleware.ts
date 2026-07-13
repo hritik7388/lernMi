@@ -1,19 +1,12 @@
 // src/common/middleware/notFound.middleware.ts
 import { Request, Response } from "express";
 
-export const notFoundMiddleware = (
-    req:Request,
-    res:Response
-)=>{
+export const notFoundMiddleware = (req: Request, res: Response) => {
+  return res.status(404).json({
+    success: false,
 
-return res.status(404).json({
+    statusCode: 404,
 
-success:false,
-
-statusCode:404,
-
-message:"Route not found"
-
-})
-
-}
+    message: "Route not found",
+  });
+};

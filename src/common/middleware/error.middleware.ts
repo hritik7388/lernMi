@@ -1,5 +1,5 @@
 // src/common/middleware/error.middleware.ts
-import type{ NextFunction, Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 import { ZodError } from "zod";
 
 import { AppError, HttpStatus } from "../errors";
@@ -9,7 +9,7 @@ export const errorMiddleware = (
   error: unknown,
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   logger.error(error);
 

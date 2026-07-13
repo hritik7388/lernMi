@@ -1,5 +1,4 @@
-// src/common/interfaces/notification.interface.ts
-// src/common/interfaces/notification.interface.ts
+// src/common/interfaces/notification.interface
 
 import { NotificationChannel } from "../enums/notification-channel.enum";
 import { NotificationTemplate } from "../enums/notification-template.enum";

@@ -4,7 +4,8 @@ import { env } from "../../../config/env";
 import logger from "../../../config/logger";
 
 export const mailTransporter = nodemailer.createTransport({
-  service: env.SMTP_HOST,  port: 587,
+  service: env.SMTP_HOST,
+  port: 587,
   secure: false, // STARTTLS
   auth: {
     user: env.SMTP_USER,
@@ -16,12 +17,13 @@ export const mailTransporter = nodemailer.createTransport({
   maxConnections: 5,
   maxMessages: 100,
 });
- 
-mailTransporter.verify()
+
+mailTransporter
+  .verify()
   .then(() => {
     logger.info("📧 Nodemailer transporter initialized");
   })
-  .catch((error: { message: any; }) => {
+  .catch((error: { message: any }) => {
     logger.error("❌ Failed to initialize mail transporter", {
       message: error.message,
     });

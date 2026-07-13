@@ -8,34 +8,31 @@ import logger from "../../../config/logger";
 
 export const NOTIFICATION_QUEUE_NAME = "notification-queue";
 
-export const notificationQueue = new Queue(
-  NOTIFICATION_QUEUE_NAME,
-  {
-    // cast to any to avoid ioredis type mismatch between installed copies
-    connection: redisClient as any,
+export const notificationQueue = new Queue(NOTIFICATION_QUEUE_NAME, {
+  // cast to any to avoid ioredis type mismatch between installed copies
+  connection: redisClient as any,
 
-    defaultJobOptions: {
-      attempts: 3,
+  defaultJobOptions: {
+    attempts: 3,
 
-      backoff: {
-        type: "exponential",
-        delay: 5000,
-      },
-
-      removeOnComplete: {
-        age: 60 * 60 * 24, // 24 Hours
-
-        count: 1000,
-      },
-
-      removeOnFail: {
-        age: 60 * 60 * 24 * 7, // 7 Days
-
-        count: 5000,
-      },
+    backoff: {
+      type: "exponential",
+      delay: 5000,
     },
-  }
-);
+
+    removeOnComplete: {
+      age: 60 * 60 * 24, // 24 Hours
+
+      count: 1000,
+    },
+
+    removeOnFail: {
+      age: 60 * 60 * 24 * 7, // 7 Days
+
+      count: 5000,
+    },
+  },
+});
 
 notificationQueue.on("error", (error) => {
   logger.error("❌ Notification Queue Error", {
@@ -60,11 +57,7 @@ notificationQueue.on("resumed", () => {
 export async function addNotificationJob(
   name: string,
   payload: unknown,
-  options?: JobsOptions
+  options?: JobsOptions,
 ) {
-  return notificationQueue.add(
-    name,
-    payload,
-    options
-  );
+  return notificationQueue.add(name, payload, options);
 }
