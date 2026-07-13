@@ -16,12 +16,7 @@ export const mailTransporter = nodemailer.createTransport({
   maxConnections: 5,
   maxMessages: 100,
 });
-console.log({
-  host: env.SMTP_HOST,
-  port: env.SMTP_PORT,
-  user: env.SMTP_USER,
-  passLoaded: !!env.SMTP_PASS,
-});
+ 
 mailTransporter.verify()
   .then(() => {
     logger.info("📧 Nodemailer transporter initialized");
