@@ -20,6 +20,7 @@ interface Config {
   JWT_REFRESH_EXPIRES_IN: number | string;
   LOG_LEVEL: string;
   ALLOWED_ORIGINS: string;
+  BCRYPT_ROUNDS: number;
 }
 
 export const env: Config = {
@@ -38,4 +39,6 @@ export const env: Config = {
   LOG_LEVEL: process.env.LOG_LEVEL || "info",
 
   ALLOWED_ORIGINS: process.env.ALLOWED_ORIGINS || "http://localhost:3000",
+
+  BCRYPT_ROUNDS: Number(process.env.BCRYPT_ROUNDS) || 10,
 };
