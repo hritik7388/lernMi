@@ -3,93 +3,87 @@
 import { z } from "zod";
 import { UserType } from "@prisma/client";
 
+// ---------------- Common Validators ----------------
+
+const nameValidator = (field: string) =>
+  z.string().min(2, {
+    message: `${field} must be at least 2 characters`,
+  });
+
+const emailValidator = z
+  .string()
+  .min(1, { message: "Email is required" })
+  .email({ message: "Invalid email address" });
+
+const passwordValidator = z
+  .string()
+  .min(1, { message: "Password is required" })
+  .min(8, { message: "Password must be at least 8 characters" });
+
+const mobileValidator = z
+  .string()
+  .min(1, { message: "Mobile Number is required" });
+
+const countryCodeValidator = z
+  .string()
+  .min(1, { message: "Country Code is required" });
+
+const userFields = {
+  firstName: nameValidator("First Name"),
+  lastName: nameValidator("Last Name"),
+  email: emailValidator,
+  passwordHash: passwordValidator,
+  mobileNumber: mobileValidator,
+  countryCode: countryCodeValidator,
+};
+
+// ---------------- Register ----------------
+
 export const registerSchema = z.object({
-  firstName: z
-    .string()
-    .min(2, { message: "First Name must be at least 2 characters" }),
-
-  lastName: z
-    .string()
-    .min(2, { message: "Last Name must be at least 2 characters" }),
-
-  email: z
-    .string()
-    .min(1, { message: "Email is required" })
-    .email({ message: "Invalid email address" }),
-
-  passwordHash: z
-    .string()
-    .min(1, { message: "Password is required" })
-    .min(8, { message: "Password must be at least 8 characters" }),
-
-  mobileNumber: z.string().min(1, { message: "Mobile Number is required" }),
-
-  countryCode: z.string().min(1, { message: "Country Code is required" }),
-
+  ...userFields,
   user_type: z.nativeEnum(UserType),
 });
 
+// ---------------- Update ----------------
+
 export const updateschema = z.object({
-  firstName: z
-    .string()
-    .min(2, { message: "First Name must be at least 2 characters" }),
-
-  lastName: z
-    .string()
-    .min(2, { message: "Last Name must be at least 2 characters" }),
-
-  email: z
-    .string()
-    .min(1, { message: "Email is required" })
-    .email({ message: "Invalid email address" }),
-
-  passwordHash: z
-    .string()
-    .min(1, { message: "Password is required" })
-    .min(8, { message: "Password must be at least 8 characters" }),
-
-  mobileNumber: z.string().min(1, { message: "Mobile Number is required" }),
-
-  countryCode: z.string().min(1, { message: "Country Code is required" }),
+  ...userFields,
 });
+
+// ---------------- Login ----------------
 
 export const loginSchema = z.object({
-  email: z
-    .string()
-    .min(1, { message: "Email is required" })
-    .email({ message: "Invalid email address" }),
-
-  passwordHash: z
-    .string()
-    .min(1, { message: "Password is required" })
-    .min(8, { message: "Password must be at least 8 characters" }),
+  email: emailValidator,
+  passwordHash: passwordValidator,
 });
+
+// ---------------- Verify OTP ----------------
+
 export const verifySchema = z.object({
-  email: z
-    .string()
-    .min(1, { message: "Email is required" })
-    .email({ message: "Invalid email address" }),
-
-  otp: z.string({ message: "OTP is required" }),
+  email: emailValidator,
+  otp: z.string().min(1, { message: "OTP is required" }),
 });
 
-export const chnagePasswordSchema = z.object({
-  oldPasswordHash: z
-    .string()
-    .min(1, { message: "Password is required" })
-    .min(8, { message: "Password must be at least 8 characters" }),
-  newPasswordHash: z
-    .string()
-    .min(1, { message: "Password is required" })
-    .min(8, { message: "Password must be at least 8 characters" }),
-    confirmPasswordHash: z
-    .string()
-    .min(1, { message: "Password is required" })
-    .min(8, { message: "Password must be at least 8 characters" }),
-});
+// ---------------- Change Password ----------------
+
+export const chnagePasswordSchema = z
+  .object({
+    oldPasswordHash: passwordValidator,
+    newPasswordHash: passwordValidator,
+    confirmPasswordHash: passwordValidator,
+  })
+  .refine(
+    (data) => data.newPasswordHash === data.confirmPasswordHash,
+    {
+      path: ["confirmPasswordHash"],
+      message: "New password and confirm password do not match",
+    }
+  );
+
+// ---------------- Types ----------------
 
 export type RegisterUserInput = z.infer<typeof registerSchema>;
 export type UpdateUserInput = z.infer<typeof updateschema>;
 export type LoginUserInput = z.infer<typeof loginSchema>;
 export type VerifyInput = z.infer<typeof verifySchema>;
-export type ChangePasswordInput =z.infer<typeof chnagePasswordSchema>
+export type ChangePasswordInput = z.infer<typeof chnagePasswordSchema>;
