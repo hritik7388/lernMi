@@ -9,6 +9,7 @@ import {
 
 import prisma from "../../config/prisma";
 import { RegisterUserInput } from "./validator";
+import { truncate } from "fs";
 
 export class AuthRepository {
   async checkUserExists(email: string, mobileNumber: string) {
@@ -42,6 +43,28 @@ export class AuthRepository {
       },
     });
   }
+
+  async findUserByCredId(credId:string): Promise<UserCredentials | null> {
+    return prisma.userCredentials.findUnique({
+      where: {
+        cred_id:credId,
+      },
+    });
+  }
+  async updatePassword(
+  credId: string,
+  passwordHash: string,
+) {
+  return prisma.userCredentials.update({
+    where: {
+      cred_id: credId,
+    },
+    data: {
+      passwordHash,
+      updatedAt: new Date(),
+    },
+  });
+}
   async checkUserActive(credId: string): Promise<UserProfile | null> {
     return prisma.userProfile.findUnique({
       where: {
@@ -53,6 +76,26 @@ export class AuthRepository {
     });
   }
 
+    async checkUserVerify(credId: string): Promise<UserProfile | null> {
+    return prisma.userProfile.findUnique({
+      where: {
+        cred_id: credId,
+        isDeleted: false,
+        isVerified: false,
+        status: "ACTIVE",
+      },
+    });
+  }
+  async updateOtpVerification(credId: string) {
+    return prisma.userProfile.update({
+      where: {
+        cred_id: credId,
+      },
+      data: {
+        isVerified: true,
+      },
+    });
+  }
   async incrementFailedLoginAttempts(credId: string) {
     return prisma.userCredentials.update({
       where: {

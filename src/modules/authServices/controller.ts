@@ -45,4 +45,16 @@ export class AuthController {
 
     ApiResponse.success(res, 200, result.message, result.data);
   });
+
+  verifyOtp = catchAsync(async (req, res) => {
+    const result = await this.authService.verifyOtp(req.body);
+    ApiResponse.success(res, 200, result.message, result.data);
+  });
+
+  resetPassowrd = catchAsync(async (req, res) => {
+    const credId = req.user?.credId;
+    const {passwordHash} = req.body;
+    const result = await this.authService.resetPassword(credId!, passwordHash);
+    ApiResponse.success(res, 200, result.message);
+  });
 }

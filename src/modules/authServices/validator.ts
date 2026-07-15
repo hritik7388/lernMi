@@ -29,6 +29,30 @@ export const registerSchema = z.object({
   user_type: z.nativeEnum(UserType),
 });
 
+export const updateschema = z.object({
+  firstName: z
+    .string()
+    .min(2, { message: "First Name must be at least 2 characters" }),
+
+  lastName: z
+    .string()
+    .min(2, { message: "Last Name must be at least 2 characters" }),
+
+  email: z
+    .string()
+    .min(1, { message: "Email is required" })
+    .email({ message: "Invalid email address" }),
+
+  passwordHash: z
+    .string()
+    .min(1, { message: "Password is required" })
+    .min(8, { message: "Password must be at least 8 characters" }),
+
+  mobileNumber: z.string().min(1, { message: "Mobile Number is required" }),
+
+  countryCode: z.string().min(1, { message: "Country Code is required" }),
+});
+
 export const loginSchema = z.object({
   email: z
     .string()
@@ -40,6 +64,17 @@ export const loginSchema = z.object({
     .min(1, { message: "Password is required" })
     .min(8, { message: "Password must be at least 8 characters" }),
 });
+export const verifySchema = z.object({
+  email: z
+    .string()
+    .min(1, { message: "Email is required" })
+    .email({ message: "Invalid email address" }),
+
+  otp: z.string({ message: "OTP is required" }),
+});
+ 
 
 export type RegisterUserInput = z.infer<typeof registerSchema>;
+export type UpdateUserInput = z.infer<typeof updateschema>;
 export type LoginUserInput = z.infer<typeof loginSchema>;
+export type VerifyInput = z.infer<typeof verifySchema>; 

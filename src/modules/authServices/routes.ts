@@ -2,9 +2,10 @@
 import { Router } from "express";
 
 import { AuthController } from "./controller";
-import { registerSchema, loginSchema } from "./validator";
+import { registerSchema, loginSchema, verifySchema } from "./validator";
 import { validate } from "../../common/middleware";
 import { authenticate } from "../../common/middleware/auth.middleware";
+import { auth } from "firebase-admin";
 const authRouter = Router();
 const authController = new AuthController();
 
@@ -19,5 +20,9 @@ authRouter.post("/login", validate(loginSchema), authController.loginUser);
 authRouter.get("/profile", authenticate, authController.getUserProfile);
 
 authRouter.post("/forget-password", authController.forgetPassword);
+
+authRouter.post("/verify-otp",validate(verifySchema),authController.verifyOtp)
+
+authRouter.post("/reset-password", authenticate, authController.resetPassowrd);
 
 export default authRouter;

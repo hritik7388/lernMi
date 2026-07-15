@@ -2,7 +2,12 @@
 import { AuthRepository } from "./repository";
 import { AppError, HttpStatus } from "../../common/errors";
 import { BcryptHelper } from "../../common/helper/bcrypt.helper";
-import { RegisterUserInput, LoginUserInput } from "./validator";
+import {
+  RegisterUserInput,
+  LoginUserInput,
+  VerifyInput,
+   
+} from "./validator";
 import { JwtHelper } from "../../common/helper/jwt.helper";
 import { redisClient } from "../../config/redis";
 import { generateOTP } from "../../common/utils/otp";
@@ -100,7 +105,6 @@ export class AuthService {
     };
   }
   async getUserProfile(credId: string) {
-    console.log("credId", credId);
     const userProfile = await this.repository.getUserProfile(credId);
     if (!userProfile) {
       throw new AppError("User profile not found", HttpStatus.NOT_FOUND);
@@ -149,17 +153,97 @@ export class AuthService {
     });
     console.log("mail===============>>>", mail);
 
-    // // Send email (BullMQ / Nodemailer)
-    // await emailQueue.add("forgot-password", {
-    //   to: emailExists.email,
-    //   subject: "Reset Password OTP",
-    //   otp,
-    // });
-
     return {
       success: true,
       message: "OTP sent successfully. It is valid for 3 minutes.",
       data: otp,
+    };
+  }
+  async verifyOtp(userData: VerifyInput) {
+    const emailExists = await this.repository.findUserByEmail(userData.email);
+
+    if (!emailExists) {
+      throw new AppError(
+        "User with this email does not exist",
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const userProfile = await this.repository.checkUserVerify(
+      emailExists.cred_id,
+    );
+
+    if (!userProfile || userProfile.isVerified === true) {
+      throw new AppError(
+        "User profile Deleted or not Active or already verified",
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const redisKey = `forgot-password:${emailExists.email}`;
+
+    const storedOtp = await redisClient.get(redisKey);
+
+    if (!storedOtp) {
+      throw new AppError(
+        "OTP has expired. Please request a new one.",
+        HttpStatus.GONE,
+      );
+    }
+
+    if (storedOtp !== userData.otp) {
+      throw new AppError("Invalid OTP.", HttpStatus.BAD_REQUEST);
+    }
+    await this.repository.updateOtpVerification(emailExists.cred_id);
+    await redisClient.del(redisKey);
+    const resetToken = JwtHelper.generateToken({
+      credId: emailExists.cred_id,
+      email: emailExists.email,
+      userType: userProfile.user_type,
+    });
+
+    return {
+      success: true,
+      message: "OTP verified successfully.",
+      data: {
+        resetToken,
+      },
+    };
+  }
+
+  async resetPassword(credId: string, passwordHash: string) {
+    const userCred = await this.repository.findUserByCredId(credId);
+    if (!userCred) {
+      throw new AppError("User profile not found", HttpStatus.NOT_FOUND);
+    }
+    console.log("userCred=======================>>",userCred)
+    const userProfile = await this.repository.checkUserActive(userCred.cred_id);
+    console.log("userProfile===========================>>",userProfile)
+    if (!userProfile) {
+      throw new AppError(
+        "User profile Deleted Unverified or not Active",
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    console.log("passwordHash:", passwordHash, typeof passwordHash);
+    console.log("dbPasswordHash:", userCred.passwordHash, typeof userCred.passwordHash);
+    const isSamePassword = await BcryptHelper.compare(
+      passwordHash,
+      userCred.passwordHash,
+    );
+    if (isSamePassword) {
+      throw new AppError(
+        "New password cannot be the same as the old password.",
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const hashedPassword = await BcryptHelper.hash(passwordHash);
+    await this.repository.updatePassword(credId, hashedPassword);
+    await redisClient.del(`session:${userCred.cred_id}`);
+
+    return {
+      success: true,
+      message: "Password reset successfully.",
     };
   }
 }
