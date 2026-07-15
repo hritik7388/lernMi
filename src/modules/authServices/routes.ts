@@ -25,4 +25,6 @@ authRouter.post("/verify-otp",validate(verifySchema),authController.verifyOtp)
 
 authRouter.post("/reset-password", authenticate, authController.resetPassowrd);
 
+authRouter.post("/chnage-password", authenticate, authController.chnagePassword);
+
 export default authRouter;

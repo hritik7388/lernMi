@@ -72,9 +72,24 @@ export const verifySchema = z.object({
 
   otp: z.string({ message: "OTP is required" }),
 });
- 
+
+export const chnagePasswordSchema = z.object({
+  oldPasswordHash: z
+    .string()
+    .min(1, { message: "Password is required" })
+    .min(8, { message: "Password must be at least 8 characters" }),
+  newPasswordHash: z
+    .string()
+    .min(1, { message: "Password is required" })
+    .min(8, { message: "Password must be at least 8 characters" }),
+    confirmPasswordHash: z
+    .string()
+    .min(1, { message: "Password is required" })
+    .min(8, { message: "Password must be at least 8 characters" }),
+});
 
 export type RegisterUserInput = z.infer<typeof registerSchema>;
 export type UpdateUserInput = z.infer<typeof updateschema>;
 export type LoginUserInput = z.infer<typeof loginSchema>;
-export type VerifyInput = z.infer<typeof verifySchema>; 
+export type VerifyInput = z.infer<typeof verifySchema>;
+export type ChangePasswordInput =z.infer<typeof chnagePasswordSchema>

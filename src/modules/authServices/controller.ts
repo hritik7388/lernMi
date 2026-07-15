@@ -53,8 +53,14 @@ export class AuthController {
 
   resetPassowrd = catchAsync(async (req, res) => {
     const credId = req.user?.credId;
-    const {passwordHash} = req.body;
+    const { passwordHash } = req.body;
     const result = await this.authService.resetPassword(credId!, passwordHash);
+    ApiResponse.success(res, 200, result.message);
+  });
+
+  chnagePassword = catchAsync(async (req, res) => {
+    const credId = req.user?.credId;
+    const result = await this.authService.chnagePassword(credId!, req.body);
     ApiResponse.success(res, 200, result.message);
   });
 }

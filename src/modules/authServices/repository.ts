@@ -12,6 +12,9 @@ import { RegisterUserInput } from "./validator";
 import { truncate } from "fs";
 
 export class AuthRepository {
+  // auth.repository.ts
+
+  
   async checkUserExists(email: string, mobileNumber: string) {
     const [emailExists, mobileExists] = await Promise.all([
       prisma.userCredentials.findUnique({
@@ -44,27 +47,24 @@ export class AuthRepository {
     });
   }
 
-  async findUserByCredId(credId:string): Promise<UserCredentials | null> {
+  async findUserByCredId(credId: string): Promise<UserCredentials | null> {
     return prisma.userCredentials.findUnique({
       where: {
-        cred_id:credId,
+        cred_id: credId,
       },
     });
   }
-  async updatePassword(
-  credId: string,
-  passwordHash: string,
-) {
-  return prisma.userCredentials.update({
-    where: {
-      cred_id: credId,
-    },
-    data: {
-      passwordHash,
-      updatedAt: new Date(),
-    },
-  });
-}
+  async updatePassword(credId: string, passwordHash: string) {
+    return prisma.userCredentials.update({
+      where: {
+        cred_id: credId,
+      },
+      data: {
+        passwordHash,
+        updatedAt: new Date(),
+      },
+    });
+  }
   async checkUserActive(credId: string): Promise<UserProfile | null> {
     return prisma.userProfile.findUnique({
       where: {
@@ -76,12 +76,11 @@ export class AuthRepository {
     });
   }
 
-    async checkUserVerify(credId: string): Promise<UserProfile | null> {
+  async checkUserVerify(credId: string): Promise<UserProfile | null> {
     return prisma.userProfile.findUnique({
       where: {
         cred_id: credId,
         isDeleted: false,
-        isVerified: false,
         status: "ACTIVE",
       },
     });

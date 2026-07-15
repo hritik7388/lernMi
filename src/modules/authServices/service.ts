@@ -6,7 +6,7 @@ import {
   RegisterUserInput,
   LoginUserInput,
   VerifyInput,
-   
+  ChangePasswordInput,
 } from "./validator";
 import { JwtHelper } from "../../common/helper/jwt.helper";
 import { redisClient } from "../../config/redis";
@@ -19,11 +19,9 @@ const OTP_EXPIRY_SECONDS = 3 * 60;
 
 export class AuthService {
   private readonly repository: AuthRepository;
-
   constructor() {
     this.repository = new AuthRepository();
   }
-
   async registerUser(userData: RegisterUserInput) {
     const { emailExists, mobileExists } = await this.repository.checkUserExists(
       userData.email,
@@ -173,9 +171,9 @@ export class AuthService {
       emailExists.cred_id,
     );
 
-    if (!userProfile || userProfile.isVerified === true) {
+    if (!userProfile) {
       throw new AppError(
-        "User profile Deleted or not Active or already verified",
+        "User profile Deleted or not Active.",
         HttpStatus.NOT_FOUND,
       );
     }
@@ -210,23 +208,18 @@ export class AuthService {
       },
     };
   }
-
   async resetPassword(credId: string, passwordHash: string) {
     const userCred = await this.repository.findUserByCredId(credId);
     if (!userCred) {
       throw new AppError("User profile not found", HttpStatus.NOT_FOUND);
     }
-    console.log("userCred=======================>>",userCred)
     const userProfile = await this.repository.checkUserActive(userCred.cred_id);
-    console.log("userProfile===========================>>",userProfile)
     if (!userProfile) {
       throw new AppError(
         "User profile Deleted Unverified or not Active",
         HttpStatus.NOT_FOUND,
       );
     }
-    console.log("passwordHash:", passwordHash, typeof passwordHash);
-    console.log("dbPasswordHash:", userCred.passwordHash, typeof userCred.passwordHash);
     const isSamePassword = await BcryptHelper.compare(
       passwordHash,
       userCred.passwordHash,
@@ -238,8 +231,59 @@ export class AuthService {
       );
     }
     const hashedPassword = await BcryptHelper.hash(passwordHash);
-    await this.repository.updatePassword(credId, hashedPassword);
-    await redisClient.del(`session:${userCred.cred_id}`);
+    await Promise.all([
+      this.repository.updatePassword(credId, hashedPassword),
+      redisClient.del(`session:${userCred.cred_id}`),
+    ]);
+
+    return {
+      success: true,
+      message: "Password reset successfully.",
+    };
+  }
+  async chnagePassword(credId: string, userData: ChangePasswordInput) {
+    const userCred = await this.repository.findUserByCredId(credId);
+    if (!userCred) {
+      throw new AppError("User profile not found", HttpStatus.NOT_FOUND);
+    }
+    const userProfile = await this.repository.checkUserActive(userCred.cred_id);
+    if (!userProfile) {
+      throw new AppError(
+        "User profile Deleted Unverified or not Active",
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    const isOldPassword = await BcryptHelper.compare(
+      userData.oldPasswordHash,
+      userCred.passwordHash,
+    );
+    if (!isOldPassword) {
+      throw new AppError("Old password is incorrect.", HttpStatus.BAD_REQUEST);
+    }
+
+    if (userData.newPasswordHash !== userData.confirmPasswordHash) {
+      throw new AppError(
+        "new password cannot be the same as the confirm  password.",
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const isSamePassword = await BcryptHelper.compare(
+      userData.newPasswordHash,
+      userCred.passwordHash,
+    );
+
+    if (isSamePassword) {
+      throw new AppError(
+        "New password cannot be the same as the old password.",
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const hashedPassword = await BcryptHelper.hash(userData.newPasswordHash);
+    await Promise.all([
+      this.repository.updatePassword(credId, hashedPassword),
+      redisClient.del(`session:${userCred.cred_id}`),
+    ]);
 
     return {
       success: true,
