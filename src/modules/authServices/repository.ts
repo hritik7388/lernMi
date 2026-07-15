@@ -9,7 +9,7 @@ import {
 
 import prisma from "../../config/prisma";
 import { RegisterUserInput } from "./validator";
-import { truncate } from "fs";
+
 
 export class AuthRepository {
   // auth.repository.ts

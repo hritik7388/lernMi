@@ -4,8 +4,7 @@ import { Router } from "express";
 import { AuthController } from "./controller";
 import { registerSchema, loginSchema, verifySchema } from "./validator";
 import { validate } from "../../common/middleware";
-import { authenticate } from "../../common/middleware/auth.middleware";
-import { auth } from "firebase-admin";
+import { authenticate } from "../../common/middleware/auth.middleware"; 
 const authRouter = Router();
 const authController = new AuthController();
 
