@@ -48,6 +48,7 @@ model DeviceSession {
   session_id String @id @default(uuid())
 
   cred_id String
+  device_id String
 
   device_FCM_Id String
   deviceName    String

@@ -8,13 +8,11 @@ import {
 } from "@prisma/client";
 
 import prisma from "../../config/prisma";
-import { RegisterUserInput } from "./validator";
-
+import { RegisterUserInput, UpdateFcmTokenInput } from "./validator";
 
 export class AuthRepository {
   // auth.repository.ts
 
-  
   async checkUserExists(email: string, mobileNumber: string) {
     const [emailExists, mobileExists] = await Promise.all([
       prisma.userCredentials.findUnique({
@@ -129,6 +127,50 @@ export class AuthRepository {
     });
   }
 
+  async findDeviceByFcm(device_FCM_Id: string): Promise<DeviceSession | null> {
+    return prisma.deviceSession.findFirst({
+      where: {
+        device_FCM_Id: device_FCM_Id,
+      },
+    });
+  }
+  async updateDeviceSession(
+    sessionId: string,
+    userData: UpdateFcmTokenInput,
+  ): Promise<DeviceSession> {
+    return prisma.deviceSession.update({
+      where: {
+        session_id: sessionId,
+      },
+      data: {
+        device_FCM_Id: userData.device_FCM_Id,
+        deviceName: userData.deviceName,
+        deviceType: userData.deviceType,
+        osVersion: userData.osVersion,
+        appVersion: userData.appVersion,
+        ipAddress: userData.ipAddress,
+        lastLoginAt: new Date(),
+      },
+    });
+  }
+  async createDeviceSession(
+    credId: string,
+    userData: UpdateFcmTokenInput,
+  ): Promise<DeviceSession> {
+    return prisma.deviceSession.create({
+      data: {
+        cred_id: credId,
+        device_id: userData.deviceId,
+        device_FCM_Id: userData.device_FCM_Id,
+        deviceName: userData.deviceName,
+        deviceType: userData.deviceType,
+        osVersion: userData.osVersion,
+        appVersion: userData.appVersion,
+        ipAddress: userData.ipAddress,
+        lastLoginAt: new Date(),
+      },
+    });
+  }
   async createUser(data: RegisterUserInput) {
     return prisma.$transaction(async (tx) => {
       const credential = await tx.userCredentials.create({
@@ -161,14 +203,6 @@ export class AuthRepository {
       where: {
         user_id: userId,
       },
-      data,
-    });
-  }
-
-  async createDeviceSession(
-    data: Prisma.DeviceSessionCreateInput,
-  ): Promise<DeviceSession> {
-    return prisma.deviceSession.create({
       data,
     });
   }

@@ -72,13 +72,27 @@ export const chnagePasswordSchema = z
     newPasswordHash: passwordValidator,
     confirmPasswordHash: passwordValidator,
   })
-  .refine(
-    (data) => data.newPasswordHash === data.confirmPasswordHash,
-    {
-      path: ["confirmPasswordHash"],
-      message: "New password and confirm password do not match",
-    }
-  );
+  .refine((data) => data.newPasswordHash === data.confirmPasswordHash, {
+    path: ["confirmPasswordHash"],
+    message: "New password and confirm password do not match",
+  });
+
+  // ---------------- Device FCM ----------------
+
+export const updateFcmTokenSchema = z.object({
+  deviceId:z.string().trim().min(1, { message: "FCM Token is required" }),
+  device_FCM_Id: z.string().trim().min(1, { message: "FCM Token is required" }),
+
+  deviceName: z.string().trim().min(1, { message: "Device name is required" }),
+
+  deviceType: z.string().trim().min(1, { message: "Device type is required" }),
+
+  osVersion: z.string().trim().min(1, { message: "OS version is required" }),
+
+  appVersion: z.string().trim().min(1, { message: "App version is required" }),
+
+  ipAddress: z.string().trim().min(1, { message: "IP address is required" }),
+});
 
 // ---------------- Types ----------------
 
@@ -87,3 +101,4 @@ export type UpdateUserInput = z.infer<typeof updateschema>;
 export type LoginUserInput = z.infer<typeof loginSchema>;
 export type VerifyInput = z.infer<typeof verifySchema>;
 export type ChangePasswordInput = z.infer<typeof chnagePasswordSchema>;
+export type UpdateFcmTokenInput = z.infer<typeof updateFcmTokenSchema>;

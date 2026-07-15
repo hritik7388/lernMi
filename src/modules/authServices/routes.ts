@@ -2,7 +2,7 @@
 import { Router } from "express";
 
 import { AuthController } from "./controller";
-import { registerSchema, loginSchema, verifySchema } from "./validator";
+import { registerSchema, loginSchema, verifySchema, updateFcmTokenSchema } from "./validator";
 import { validate } from "../../common/middleware";
 import { authenticate } from "../../common/middleware/auth.middleware"; 
 const authRouter = Router();
@@ -25,5 +25,7 @@ authRouter.post("/verify-otp",validate(verifySchema),authController.verifyOtp)
 authRouter.post("/reset-password", authenticate, authController.resetPassowrd);
 
 authRouter.post("/chnage-password", authenticate, authController.chnagePassword);
+
+authRouter.post("/update-device",validate(updateFcmTokenSchema),authenticate,authController.updateDevice)
 
 export default authRouter;

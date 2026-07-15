@@ -1,4 +1,4 @@
-// src/common/interfaces/notification.interface
+// src/common/interfaces/notification.interface.ts
 
 import { NotificationChannel } from "../enums/notification-channel.enum";
 import { NotificationTemplate } from "../enums/notification-template.enum";
@@ -13,4 +13,7 @@ export interface NotificationPayload {
   subject?: string;
 
   data: Record<string, unknown>;
+  priority?: number;
+
+  delay?: number;
 }

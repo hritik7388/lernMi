@@ -63,4 +63,10 @@ export class AuthController {
     const result = await this.authService.chnagePassword(credId!, req.body);
     ApiResponse.success(res, 200, result.message);
   });
+
+  updateDevice = catchAsync(async (req, res) => {
+    const credId = req.user?.credId;
+    const result = await this.authService.updateFcmtoken(credId!, req.body);
+    ApiResponse.success(res, 200, result.message, result.data);
+  });
 }

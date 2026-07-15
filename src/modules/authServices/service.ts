@@ -7,6 +7,7 @@ import {
   LoginUserInput,
   VerifyInput,
   ChangePasswordInput,
+  UpdateFcmTokenInput,
 } from "./validator";
 import { JwtHelper } from "../../common/helper/jwt.helper";
 import { redisClient } from "../../config/redis";
@@ -14,6 +15,7 @@ import { generateOTP } from "../../common/utils/otp";
 import { notificationService } from "../../common/notification/notification.service";
 import { NotificationChannel } from "../../common/enums/notification-channel.enum";
 import { NotificationTemplate } from "../../common/enums/notification-template.enum";
+import NotificationModuleService from '../notification/notification.service'
 
 const OTP_EXPIRY_SECONDS = 3 * 60;
 
@@ -140,19 +142,25 @@ export class AuthService {
       OTP_EXPIRY_SECONDS,
     );
 
-    const mail = await notificationService.send({
+   await Promise.all([
+    notificationService.send({
       channel: NotificationChannel.EMAIL,
       template: NotificationTemplate.PASSWORD_RESET,
-      recipient: emailExists.email,
+      to: emailExists.email,
       subject: "Reset Password OTP",
       data: {
         otp,
       },
-    });
-    console.log("mail===============>>>", mail);
+    }),
 
-    return {
-      success: true,
+    NotificationModuleService.sendPushToUser(
+      emailExists.cred_id,
+      "Reset Password",
+      "OTP has been sent to your registered email.",
+    ),
+  ]);
+
+    return { 
       message: "OTP sent successfully. It is valid for 3 minutes.",
       data: otp,
     };
@@ -288,6 +296,41 @@ export class AuthService {
     return {
       success: true,
       message: "Password reset successfully.",
+    };
+  }
+  async updateFcmtoken(credId: string, userData: UpdateFcmTokenInput) {
+    const userCred = await this.repository.findUserByCredId(credId);
+
+    if (!userCred) {
+      throw new AppError("User profile not found", HttpStatus.NOT_FOUND);
+    }
+
+    const existingDevice = await this.repository.findDeviceByFcm(
+      userData.device_FCM_Id,
+    );
+
+    if (existingDevice) {
+      await this.repository.updateDeviceSession(
+        existingDevice.session_id,
+        userData,
+      );
+
+      return {
+        success: true,
+        message: "Device session updated successfully.",
+        data: existingDevice,
+      };
+    }
+
+    const createDevice = await this.repository.createDeviceSession(
+      credId,
+      userData,
+    );
+
+    return {
+      success: true,
+      message: "Device session created successfully.",
+      data: createDevice,
     };
   }
 }

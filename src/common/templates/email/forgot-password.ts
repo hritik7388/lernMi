@@ -1,16 +1,38 @@
 // src/common/templates/email/forgot-password.ts
 
-import { emailLayout } from "../layout.template";
+export const forgotPasswordTemplate = (otp: string): string => `
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+</head>
 
-export const forgotPasswordTemplate = (otp: string) =>
-  emailLayout(`
-<h2>Forgot Password</h2>
+<body
+style="
+font-family:Arial;
+background:#f4f4f4;
+padding:40px;
+">
+
+<div
+style="
+max-width:600px;
+margin:auto;
+background:#fff;
+padding:30px;
+border-radius:8px;
+">
+
+<h2>Password Reset</h2>
 
 <p>Your OTP is</p>
 
 <h1>${otp}</h1>
 
-<p>This OTP is valid for <b>3 minutes</b>.</p>
+<p>This OTP is valid for 3 minutes.</p>
 
-<p>If you didn't request this, ignore this email.</p>
-`);
+</div>
+
+</body>
+</html>
+`;
