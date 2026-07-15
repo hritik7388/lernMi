@@ -15,7 +15,7 @@ import { generateOTP } from "../../common/utils/otp";
 import { notificationService } from "../../common/notification/notification.service";
 import { NotificationChannel } from "../../common/enums/notification-channel.enum";
 import { NotificationTemplate } from "../../common/enums/notification-template.enum";
-import NotificationModuleService from '../notification/notification.service'
+import NotificationModuleService from "../notification/notification.service";
 
 const OTP_EXPIRY_SECONDS = 3 * 60;
 
@@ -142,25 +142,25 @@ export class AuthService {
       OTP_EXPIRY_SECONDS,
     );
 
-   await Promise.all([
-    notificationService.send({
-      channel: NotificationChannel.EMAIL,
-      template: NotificationTemplate.PASSWORD_RESET,
-      to: emailExists.email,
-      subject: "Reset Password OTP",
-      data: {
-        otp,
-      },
-    }),
+    await Promise.all([
+      notificationService.send({
+        channel: NotificationChannel.EMAIL,
+        template: NotificationTemplate.PASSWORD_RESET,
+        to: emailExists.email,
+        subject: "Reset Password OTP",
+        data: {
+          otp,
+        },
+      }),
 
-    NotificationModuleService.sendPushToUser(
-      emailExists.cred_id,
-      "Reset Password",
-      "OTP has been sent to your registered email.",
-    ),
-  ]);
+      NotificationModuleService.sendPushToUser(
+        emailExists.cred_id,
+        "Reset Password",
+        "OTP has been sent to your registered email.",
+      ),
+    ]);
 
-    return { 
+    return {
       message: "OTP sent successfully. It is valid for 3 minutes.",
       data: otp,
     };

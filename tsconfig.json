@@ -1,5 +1,5 @@
 {
-  "compilerOptions": {
+  "compilerOptions": { 
     "rootDir": ".",
     "outDir": "./dist",
 
@@ -9,11 +9,7 @@
     "strict": true,
     "resolveJsonModule": true,
 
-    "baseUrl": ".",
-    "paths": {
-      "@shared/*": ["common/*"],
-      "@src/*": ["src/*"]
-    }
+    
   },
 
   "include": ["src", "common"],
