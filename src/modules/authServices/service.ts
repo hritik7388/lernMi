@@ -333,7 +333,6 @@ export class AuthService {
       data: createDevice,
     };
   }
-
   async chnageProfile(credId: string, imageUrl: string) {
     const userCred = await this.repository.findUserByCredId(credId);
     if (!userCred) {
@@ -352,7 +351,6 @@ export class AuthService {
       message: "Profile image updated successfully",
     };
   }
-
   async getAvtar(credId: string) {
     const userCred = await this.repository.findUserByCredId(credId);
     if (!userCred) {
