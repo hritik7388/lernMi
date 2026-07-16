@@ -1,8 +1,10 @@
 // src/modules/authServices/repository.ts
 import {
   DeviceSession,
+  MediaType,
   Prisma,
   UserCredentials,
+  UserMedia,
   UserProfile,
   UserType,
 } from "@prisma/client";
@@ -93,6 +95,43 @@ export class AuthRepository {
       },
     });
   }
+  async updateProfileImage(userId: string, imageUrl: string) {
+    const media = await prisma.userMedia.findFirst({
+      where: {
+        user_id: userId,
+        mediaType: MediaType.IMAGE,
+      },
+    });
+
+    if (media) {
+      return prisma.userMedia.update({
+        where: {
+          media_id: media.media_id,
+        },
+        data: {
+          url: imageUrl,
+        },
+      });
+    }
+
+    return prisma.userMedia.create({
+      data: {
+        user_id: userId,
+        mediaType: MediaType.IMAGE,
+        url: imageUrl,
+      },
+    });
+  }
+
+  async getAvtar(userId: string): Promise<UserMedia | null> {
+    return prisma.userMedia.findFirst({
+      where: {
+        user_id: userId,
+        mediaType: MediaType.IMAGE,
+      },
+    });
+  }
+
   async incrementFailedLoginAttempts(credId: string) {
     return prisma.userCredentials.update({
       where: {

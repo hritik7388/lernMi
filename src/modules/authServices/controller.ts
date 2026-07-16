@@ -69,4 +69,16 @@ export class AuthController {
     const result = await this.authService.updateFcmtoken(credId!, req.body);
     ApiResponse.success(res, 200, result.message, result.data);
   });
+
+  chnageProfile=catchAsync(async(req,res)=>{
+    const credId = req.user?.credId;
+    const result = await this.authService.chnageProfile(credId!, req.body.imageUrl);
+    ApiResponse.success(res, 200, result.message);
+  })
+
+  getAvtar=catchAsync(async(req,res)=>{
+     const credId = req.user?.credId;
+     const result = await this.authService.getAvtar(credId!)
+ApiResponse.success(res, 200, result.message, result.data);
+  })
 }

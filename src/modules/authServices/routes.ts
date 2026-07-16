@@ -26,6 +26,11 @@ authRouter.post("/reset-password", authenticate, authController.resetPassowrd);
 
 authRouter.post("/chnage-password", authenticate, authController.chnagePassword);
 
-authRouter.post("/update-device",validate(updateFcmTokenSchema),authenticate,authController.updateDevice)
+authRouter.put("/update-device",validate(updateFcmTokenSchema),authenticate,authController.updateDevice);
+
+authRouter.put("/update-profile", authenticate,authController.chnageProfile)
+
+authRouter.get("/get-profile", authenticate,authController.getAvtar)
+
 
 export default authRouter;

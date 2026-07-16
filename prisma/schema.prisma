@@ -69,7 +69,7 @@ model DeviceSession {
 }
 
 model UserMedia {
-  id String @id @default(uuid())
+  media_id String @id @default(uuid())
 
   user_id String?
 

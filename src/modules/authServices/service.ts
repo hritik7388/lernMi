@@ -333,4 +333,42 @@ export class AuthService {
       data: createDevice,
     };
   }
+
+  async chnageProfile(credId: string, imageUrl: string) {
+    const userCred = await this.repository.findUserByCredId(credId);
+    if (!userCred) {
+      throw new AppError("User profile not found", HttpStatus.NOT_FOUND);
+    }
+    const userProfile = await this.repository.checkUserActive(userCred.cred_id);
+    if (!userProfile) {
+      throw new AppError(
+        "User profile Deleted Unverified or not Active",
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    await this.repository.updateProfileImage(userProfile.user_id, imageUrl);
+
+    return {
+      message: "Profile image updated successfully",
+    };
+  }
+
+  async getAvtar(credId: string) {
+    const userCred = await this.repository.findUserByCredId(credId);
+    if (!userCred) {
+      throw new AppError("User profile not found", HttpStatus.NOT_FOUND);
+    }
+    const userProfile = await this.repository.checkUserActive(userCred.cred_id);
+    if (!userProfile) {
+      throw new AppError(
+        "User profile Deleted Unverified or not Active",
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    const useravtar = await this.repository.getAvtar(userProfile.user_id);
+    return {
+      message: "Profile get successfully ",
+      data: useravtar,
+    };
+  }
 }
