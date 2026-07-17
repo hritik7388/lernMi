@@ -37,6 +37,7 @@ const userFields = {
   countryCode: countryCodeValidator,
 };
 
+export const imageValidator = z.string().url("Invalid image URL");
 // ---------------- Register ----------------
 
 export const registerSchema = z.object({
@@ -46,9 +47,9 @@ export const registerSchema = z.object({
 
 // ---------------- Update ----------------
 
-export const updateschema = z.object({
-  ...userFields,
-  imageurl:z.string({ message: "imageurl is required" })
+export const updateProfileSchema = z.object({
+  firstName: userFields.firstName.optional(),
+  lastName: userFields.lastName.optional(),  
 });
 
 // ---------------- Login ----------------
@@ -78,10 +79,10 @@ export const chnagePasswordSchema = z
     message: "New password and confirm password do not match",
   });
 
-  // ---------------- Device FCM ----------------
+// ---------------- Device FCM ----------------
 
 export const updateFcmTokenSchema = z.object({
-  deviceId:z.string().trim().min(1, { message: "FCM Token is required" }),
+  deviceId: z.string().trim().min(1, { message: "FCM Token is required" }),
   device_FCM_Id: z.string().trim().min(1, { message: "FCM Token is required" }),
 
   deviceName: z.string().trim().min(1, { message: "Device name is required" }),
@@ -95,11 +96,15 @@ export const updateFcmTokenSchema = z.object({
   ipAddress: z.string().trim().min(1, { message: "IP address is required" }),
 });
 
+export const logoutSchema = z.object({
+    deviceId:z.string().trim().min(1, { message: "FCM Token is required" }),
+});
 // ---------------- Types ----------------
 
 export type RegisterUserInput = z.infer<typeof registerSchema>;
-export type UpdateUserInput = z.infer<typeof updateschema>;
+export type UpdateUserInput = z.infer<typeof updateProfileSchema>;
 export type LoginUserInput = z.infer<typeof loginSchema>;
 export type VerifyInput = z.infer<typeof verifySchema>;
 export type ChangePasswordInput = z.infer<typeof chnagePasswordSchema>;
 export type UpdateFcmTokenInput = z.infer<typeof updateFcmTokenSchema>;
+export type LogOutInput = z.infer<typeof logoutSchema>;

@@ -245,6 +245,13 @@ export class AuthRepository {
       data,
     });
   }
+  async removeDeviceSession(deviceId: string) {
+    return prisma.deviceSession.deleteMany({
+      where: {
+        device_FCM_Id: deviceId,
+      },
+    });
+  }
 
   async getUserProfile(credId: string): Promise<UserProfile | null> {
     return prisma.userProfile.findUnique({

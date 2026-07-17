@@ -2,7 +2,12 @@
 import { Request, Response } from "express";
 
 import { AuthService } from "./service";
-import { RegisterUserInput } from "./validator";
+import {
+  LoginUserInput,
+  LogOutInput,
+  RegisterUserInput,
+  UpdateUserInput,
+} from "./validator";
 import { catchAsync, ApiResponse } from "../../common/utils";
 
 export class AuthController {
@@ -21,9 +26,21 @@ export class AuthController {
       ApiResponse.success(res, 201, result.message, result.data);
     },
   );
+
+  updateUser = catchAsync(
+    async (
+      req: Request<{}, {}, UpdateUserInput>,
+      res: Response,
+    ): Promise<void> => {
+      const credId = req.user?.credId;
+      const result = await this.authService.updateProfile(credId!, req.body);
+      ApiResponse.success(res, 201, result.message, result.data);
+    },
+  );
+
   loginUser = catchAsync(
     async (
-      req: Request<{}, {}, RegisterUserInput>,
+      req: Request<{}, {}, LoginUserInput>,
       res: Response,
     ): Promise<void> => {
       const result = await this.authService.loginUser(req.body);
@@ -70,15 +87,26 @@ export class AuthController {
     ApiResponse.success(res, 200, result.message, result.data);
   });
 
-  chnageProfile=catchAsync(async(req,res)=>{
+  chnageProfile = catchAsync(async (req, res) => {
     const credId = req.user?.credId;
-    const result = await this.authService.chnageProfile(credId!, req.body.imageUrl);
+    const result = await this.authService.chnageProfile(
+      credId!,
+      req.body.imageUrl,
+    );
     ApiResponse.success(res, 200, result.message);
-  })
+  });
 
-  getAvtar=catchAsync(async(req,res)=>{
-     const credId = req.user?.credId;
-     const result = await this.authService.getAvtar(credId!)
-ApiResponse.success(res, 200, result.message, result.data);
-  })
+  getAvtar = catchAsync(async (req, res) => {
+    const credId = req.user?.credId;
+    const result = await this.authService.getAvtar(credId!);
+    ApiResponse.success(res, 200, result.message, result.data);
+  });
+
+  logOut = catchAsync(
+    async (req: Request<{}, {}, LogOutInput>, res: Response): Promise<void> => {
+      const credId = req.user?.credId;
+      const result = await this.authService.logout(credId!, req.body);
+      ApiResponse.success(res, 200, result.message);
+    },
+  );
 }

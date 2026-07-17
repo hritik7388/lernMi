@@ -9,6 +9,7 @@ import {
   ChangePasswordInput,
   UpdateFcmTokenInput,
   UpdateUserInput,
+  LogOutInput,
 } from "./validator";
 import { JwtHelper } from "../../common/helper/jwt.helper";
 import { redisClient } from "../../config/redis";
@@ -58,18 +59,30 @@ export class AuthService {
       data: userRes,
     };
   }
-  async updateUser(credId: string, userData: UpdateUserInput) {
-    const userCred = await this.repository.findUserByCredId(credId);
-    if (!userCred) {
+  async updateProfile(credId: string, data: UpdateUserInput) {
+    const user = await this.repository.findUserByCredId(credId);
+
+    if (!user) {
+      throw new AppError("User not found", HttpStatus.NOT_FOUND);
+    }
+
+    const profile = await this.repository.checkUserActive(credId);
+
+    if (!profile) {
       throw new AppError("User profile not found", HttpStatus.NOT_FOUND);
     }
-    const userProfile = await this.repository.checkUserActive(userCred.cred_id);
-    if (!userProfile) {
-      throw new AppError(
-        "User profile Deleted Unverified or not Active",
-        HttpStatus.NOT_FOUND,
-      );
-    }
+
+    const updatedUser = await this.repository.updateUserProfile(
+      profile.user_id,
+      
+      data,
+    );
+
+    return {
+      success: true,
+      message: "Profile updated successfully.",
+      data: updatedUser,
+    };
   }
   async loginUser(userData: LoginUserInput) {
     const emailExists = await this.repository.findUserByEmail(userData.email);
@@ -381,6 +394,23 @@ export class AuthService {
     return {
       message: "Profile get successfully ",
       data: useravtar,
+    };
+  }
+  async logout(credId: string, userData: LogOutInput) {
+    const user = await this.repository.findUserByCredId(credId);
+
+    if (!user) {
+      throw new AppError("User not found", HttpStatus.NOT_FOUND);
+    }
+
+    await Promise.all([
+      redisClient.del(`session:${credId}`),
+      this.repository.removeDeviceSession(userData.deviceId),
+    ]);
+
+    return {
+      success: true,
+      message: "Logout successfully.",
     };
   }
 }
