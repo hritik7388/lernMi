@@ -9,15 +9,11 @@ import { notificationQueue } from "./queues/notification.queue";
 class NotificationService {
   async send(payload: NotificationPayload): Promise<void> {
     try {
-      await notificationQueue.add(
-        "SEND_NOTIFICATION",
-        payload,
-        {
-          priority: payload.priority ?? 1,
+      await notificationQueue.add("SEND_NOTIFICATION", payload, {
+        priority: payload.priority ?? 1,
 
-          delay: payload.delay ?? 0,
-        },
-      );
+        delay: payload.delay ?? 0,
+      });
 
       logger.info("📨 Notification queued", {
         channel: payload.channel,

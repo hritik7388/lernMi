@@ -44,32 +44,21 @@ authRouter.put(
  * @desc    Authenticate user and generate JWT
  * @access  Public
  */
-authRouter.post(
-  "/login",
-  validate(loginSchema),
-  authController.loginUser,
-);
+authRouter.post("/login", validate(loginSchema), authController.loginUser);
 
 /**
  * @route   GET /api/v1/auth/profile
  * @desc    Get logged-in user profile
  * @access  Private
  */
-authRouter.get(
-  "/profile",
-  authenticate,
-  authController.getUserProfile,
-);
+authRouter.get("/profile", authenticate, authController.getUserProfile);
 
 /**
  * @route   POST /api/v1/auth/forget-password
  * @desc    Send password reset OTP to registered email
  * @access  Public
  */
-authRouter.post(
-  "/forget-password",
-  authController.forgetPassword,
-);
+authRouter.post("/forget-password", authController.forgetPassword);
 
 /**
  * @route   POST /api/v1/auth/verify-otp
@@ -87,11 +76,7 @@ authRouter.post(
  * @desc    Reset account password
  * @access  Private
  */
-authRouter.post(
-  "/reset-password",
-  authenticate,
-  authController.resetPassowrd,
-);
+authRouter.post("/reset-password", authenticate, authController.resetPassowrd);
 
 /**
  * @route   POST /api/v1/auth/change-password
@@ -121,22 +106,14 @@ authRouter.put(
  * @desc    Update user profile image
  * @access  Private
  */
-authRouter.put(
-  "/chnage-profile",
-  authenticate,
-  authController.chnageProfile,
-);
+authRouter.put("/chnage-profile", authenticate, authController.chnageProfile);
 
 /**
  * @route   GET /api/v1/auth/get-profile
  * @desc    Get user profile image/avatar
  * @access  Private
  */
-authRouter.get(
-  "/get-profile",
-  authenticate,
-  authController.getAvtar,
-);
+authRouter.get("/get-profile", authenticate, authController.getAvtar);
 
 /**
  * @route   POST /api/v1/auth/logout

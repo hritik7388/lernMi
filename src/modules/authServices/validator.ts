@@ -49,7 +49,7 @@ export const registerSchema = z.object({
 
 export const updateProfileSchema = z.object({
   firstName: userFields.firstName.optional(),
-  lastName: userFields.lastName.optional(),  
+  lastName: userFields.lastName.optional(),
 });
 
 // ---------------- Login ----------------
@@ -97,7 +97,7 @@ export const updateFcmTokenSchema = z.object({
 });
 
 export const logoutSchema = z.object({
-    deviceId:z.string().trim().min(1, { message: "FCM Token is required" }),
+  deviceId: z.string().trim().min(1, { message: "FCM Token is required" }),
 });
 // ---------------- Types ----------------
 

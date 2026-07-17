@@ -27,10 +27,7 @@ class NotificationRepository {
     });
   }
 
-  async updateFCMToken(
-    sessionId: string,
-    token: string,
-  ) {
+  async updateFCMToken(sessionId: string, token: string) {
     return prisma.deviceSession.update({
       where: {
         session_id: sessionId,

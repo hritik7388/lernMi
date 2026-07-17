@@ -21,19 +21,19 @@ interface Config {
   LOG_LEVEL: string;
   ALLOWED_ORIGINS: string;
   BCRYPT_ROUNDS: number;
-  SMTP_HOST:  string,
+  SMTP_HOST: string;
 
-SMTP_PORT: string,
+  SMTP_PORT: string;
 
-SMTP_USER: string,
+  SMTP_USER: string;
 
-SMTP_PASS: string,
+  SMTP_PASS: string;
 
-SMTP_FROM:string,
+  SMTP_FROM: string;
 
-FIREBASE_PROJECT_ID:string,
-FIREBASE_CLIENT_EMAIL:string,
-FIREBASE_PRIVATE_KEY:string,
+  FIREBASE_PROJECT_ID: string;
+  FIREBASE_CLIENT_EMAIL: string;
+  FIREBASE_PRIVATE_KEY: string;
 }
 
 export const env: Config = {
@@ -55,9 +55,9 @@ export const env: Config = {
 
   BCRYPT_ROUNDS: Number(process.env.BCRYPT_ROUNDS) || 10,
 
-SMTP_HOST: process.env.SMTP_HOST || "127.0.0.1",
+  SMTP_HOST: process.env.SMTP_HOST || "127.0.0.1",
 
-  SMTP_PORT: RequiredEnv("SMTP_PORT"),  
+  SMTP_PORT: RequiredEnv("SMTP_PORT"),
 
   SMTP_USER: RequiredEnv("SMTP_USER"),
 
@@ -70,6 +70,4 @@ SMTP_HOST: process.env.SMTP_HOST || "127.0.0.1",
   FIREBASE_CLIENT_EMAIL: RequiredEnv("FIREBASE_CLIENT_EMAIL"),
 
   FIREBASE_PRIVATE_KEY: RequiredEnv("FIREBASE_PRIVATE_KEY"),
-
-
 };

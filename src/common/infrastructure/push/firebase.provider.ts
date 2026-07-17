@@ -12,10 +12,7 @@ if (!admin.apps.length) {
 
       clientEmail: env.FIREBASE_CLIENT_EMAIL,
 
-      privateKey: env.FIREBASE_PRIVATE_KEY.replaceAll(
-        String.raw`\n`,
-        "\n",
-      ),
+      privateKey: env.FIREBASE_PRIVATE_KEY.replaceAll(String.raw`\n`, "\n"),
     }),
   });
 

@@ -74,7 +74,7 @@ export class AuthService {
 
     const updatedUser = await this.repository.updateUserProfile(
       profile.user_id,
-      
+
       data,
     );
 

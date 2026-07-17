@@ -3,7 +3,7 @@
 import { Request, Response, NextFunction } from "express";
 import { catchAsync } from "../utils/catchAsync";
 import { AppError } from "../errors/AppError";
-import { HttpStatus } from "../errors"; 
+import { HttpStatus } from "../errors";
 import prisma from "../../config/prisma";
 
 export const activeUserMiddleware = catchAsync(
