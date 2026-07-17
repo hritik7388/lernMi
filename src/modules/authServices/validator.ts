@@ -48,6 +48,7 @@ export const registerSchema = z.object({
 
 export const updateschema = z.object({
   ...userFields,
+  imageurl:z.string({ message: "imageurl is required" })
 });
 
 // ---------------- Login ----------------

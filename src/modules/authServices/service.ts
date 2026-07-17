@@ -8,6 +8,7 @@ import {
   VerifyInput,
   ChangePasswordInput,
   UpdateFcmTokenInput,
+  UpdateUserInput,
 } from "./validator";
 import { JwtHelper } from "../../common/helper/jwt.helper";
 import { redisClient } from "../../config/redis";
@@ -56,6 +57,19 @@ export class AuthService {
       message: "User registered successfully",
       data: userRes,
     };
+  }
+  async updateUser(credId: string, userData: UpdateUserInput) {
+    const userCred = await this.repository.findUserByCredId(credId);
+    if (!userCred) {
+      throw new AppError("User profile not found", HttpStatus.NOT_FOUND);
+    }
+    const userProfile = await this.repository.checkUserActive(userCred.cred_id);
+    if (!userProfile) {
+      throw new AppError(
+        "User profile Deleted Unverified or not Active",
+        HttpStatus.NOT_FOUND,
+      );
+    }
   }
   async loginUser(userData: LoginUserInput) {
     const emailExists = await this.repository.findUserByEmail(userData.email);
