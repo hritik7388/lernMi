@@ -1,5 +1,3 @@
 // src/modules/userServices/repository.ts
 
-export class UserRepository{
-    
-}
+export class UserRepository {}
