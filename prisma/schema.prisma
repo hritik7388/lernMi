@@ -7,6 +7,7 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
 model UserCredentials {
   cred_id             String    @id @default(uuid())
   email               String    @unique
@@ -21,13 +22,14 @@ model UserCredentials {
 
   @@map("user_credentials")
 }
+
 model UserProfile {
   user_id      String     @id @default(uuid())
   firstName    String
   lastName     String
   countryCode  String     @default("+91")
   mobileNumber String     @unique
-  user_type    UserType   @default(USER)
+  user_type    UserType   @default(TRADESMAN)
   isVerified   Boolean    @default(false)
   isDeleted    Boolean    @default(false)
   status       UserStatus @default(PENDING)
@@ -41,6 +43,7 @@ model UserProfile {
 
   @@map("user_profiles")
 }
+
 model DeviceSession {
   session_id String @id @default(uuid())
 
@@ -64,6 +67,7 @@ model DeviceSession {
   @@index([cred_id])
   @@map("device_sessions")
 }
+
 model UserMedia {
   media_id String @id @default(uuid())
 
@@ -80,16 +84,21 @@ model UserMedia {
   @@index([user_id])
   @@map("user_medias")
 }
+
 enum UserStatus {
   PENDING
   ACTIVE
   SUSPENDED
 }
+
 enum UserType {
-  USER
+  TRADESMAN
   SUPER_ADMIN
   SUB_ADMIN
+  COMPETENT_PERSON
+  PROJECT_MANAGER
 }
+
 enum MediaType {
   IMAGE
   VIDEO
