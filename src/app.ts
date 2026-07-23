@@ -12,11 +12,8 @@ import routes from "./routes";
 import express from "express";
 import morgan from "morgan";
 import path from "node:path";
-console.log("1. Before worker");
 
 import "./common/notification/workers/notification.worker";
-
-console.log("2. After worker");
 
 import prisma from "./config/prisma";
 import { redisClient } from "./config/redis";

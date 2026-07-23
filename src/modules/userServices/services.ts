@@ -4,6 +4,8 @@ import { AppError, HttpStatus } from "../../common/errors";
 
 export class UserServices{
 
-    
+    async createUser(credId:string){
+        
+    }
     
 }
